@@ -93,7 +93,6 @@ public class TextHandler : MonoBehaviour {
 
 	public void UpdateText(string s){
 		textBox.text = s;
-		Debug.Log(s);
 	}
 
 	void UpdateCharacter(){ //Used to reveal another character
@@ -101,7 +100,7 @@ public class TextHandler : MonoBehaviour {
 			timer = 0;
 			AdvanceCharacter();
 			UpdateText();
-			bleepSound.pitch = Random.Range(1, 5);
+			bleepSound.pitch = Random.Range(2, 5);
 			bleepSound.Play();
 		}
 	}

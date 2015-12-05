@@ -511,7 +511,7 @@ MonoBehaviour:
   - Hello Adam,
   - I am some sample text.
   - How are you?
-  rate: .100000001
+  rate: .075000003
 --- !u!4 &2084677195
 Transform:
   m_ObjectHideFlags: 0
