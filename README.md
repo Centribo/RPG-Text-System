@@ -4,7 +4,7 @@ A system for displaying text in Unity like in old RPG games.
 ## Usage
 
 1. Add TextHandler prefab to your scene.
-	![alt tag](https://raw.github.com/centribo/RPG-Text-System/master/Screenshots/s1.png)
+	!(Screenshots/s1.png?raw=true "Test")
 2. Link 
 3. 
 
