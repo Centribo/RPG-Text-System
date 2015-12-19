@@ -24,33 +24,36 @@ public class TextHandler : MonoBehaviour {
 	float timer = 0; //Timer for going character-by-character
 
 	void Awake(){
-		source = GetComponent<AudioSource>();
-		state = States.Unloaded;
+		source = GetComponent<AudioSource>(); //Get the AudioSource component we're going to use to play the sound
+		state = States.Unloaded; //We currently don't have any text to display
 	}
 
 	// Use this for initialization
 	void Start () {
+		//**************
+		//Example usage:
 		AudioClip sound = Resources.Load("bleep") as AudioClip;
-		Debug.Log(sound);
 		Voice v = new Voice(0.1f, 1, 3, sound);
 
 		string [] examples = {"Hello world!", "Test text!"};
 
 		SetVoice(v);
 		SetText(examples);
+		//**************
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		timer += Time.deltaTime;
-		UpdateCharacter();
+		timer += Time.deltaTime; //Update timer every frame
+		UpdateCharacter(); //Attempt to update the character
 
-		 if (Input.GetMouseButtonUp(0)){
-		 	AdvanceLine();
-		 }
+		//Replace this, or call AdvanceLine() from another class
+		if (Input.GetMouseButtonUp(0)){ //On mouse click,
+			AdvanceLine(); //Advance/skip line
+		}
 	}
 
-	public void SetVoice(Voice v){
+	public void SetVoice(Voice v){ //Set our voice
 		voice = v;
 		source.clip = voice.sound;
 	}
@@ -59,58 +62,58 @@ public class TextHandler : MonoBehaviour {
 		text = newText; //Set new text
 		stringIndex = 0; //Reset indicies
 		charIndex = 0;
-		state = States.Loaded;
+		state = States.Loaded; //We've been given text now, so we're ready to talk
 	}
 
 	public void AdvanceLine(){ //Called to skip revealing, or initiate revealing of next line.
-		switch(state){
-			case States.Loaded:
+		switch(state){ //Depending on what state we're in...
+			case States.Loaded: //If we're loaded, start revealing the next line
 				state = States.Revealing;
 			break;
-			case States.Revealing:
-				state = States.Displaying;
-				charIndex = text[stringIndex].Length;
-				UpdateText();
+			case States.Revealing: //If we're currently in the process of revealing a line,
+				charIndex = text[stringIndex].Length; //Set the reveal index to the end
+				UpdateText(); //Update the text, effectively skipping the reveal
+				state = States.Displaying; //Now we're just displaying a line
 			break;
-			case States.Displaying:
-				stringIndex ++;
-				if(stringIndex > text.Length - 1){
-					UpdateText("");
-					state = States.Unloaded;
-				} else {
-					state = States.Revealing;
-					charIndex = 0;
+			case States.Displaying: //If we're displaying a line
+				stringIndex ++; //Lets go to the next line that we've been given
+				if(stringIndex > text.Length - 1){ //If we're out of bounds (out of lines)
+					UpdateText(""); //Update to have a blank textbox
+					state = States.Unloaded; //We're out of text, so we're "unloaded now"
+				} else { //Otherwise,
+					charIndex = 0; //Reset the character index
+					state = States.Revealing; //And start revealing the next line
 				}
 			break;
-			case States.Unloaded:
+			case States.Unloaded: //Out of lines/given no lines
 				Debug.Log("All given text has been displayed.");
 			break;
 		}
 	}
 
 	public void AdvanceCharacter(){ //Called to advance character index
-		charIndex ++;
-		if(charIndex >= text[stringIndex].Length){
-			charIndex = text[stringIndex].Length;
-			state = States.Displaying;
+		charIndex ++; //Increment index
+		if(charIndex >= text[stringIndex].Length){ //If we're past the end of of this line
+			charIndex = text[stringIndex].Length; //Then just set it to the end
+			state = States.Displaying; //Now we're displaying the whole line
 		}
 	}
 
-	public void UpdateText(){
+	public void UpdateText(){ //Called to diplay from beginning to end of current line, using charIndex
 		UpdateText(text[stringIndex].Substring(0, charIndex));
 	}
 
-	public void UpdateText(string s){
+	public void UpdateText(string s){ //Set the textbox's text
 		textBox.text = s;
 	}
 
 	void UpdateCharacter(){ //Used to reveal another character
-		if(state == States.Revealing && timer >= voice.rate){
-			timer = 0;
-			AdvanceCharacter();
-			UpdateText();
-			source.pitch = Random.Range(voice.low, voice.high);
-			source.Play();
+		if(state == States.Revealing && timer >= voice.rate){ //If we're in the process of revealing, and enough time has past
+			timer = 0; //Reset timer
+			AdvanceCharacter(); //Advance to next character
+			UpdateText(); //Update the text to reflect the change
+			source.pitch = Random.Range(voice.low, voice.high); //Change the pitch to something random, given the voice's range
+			source.Play(); //Play the sound
 		}
 	}
 
