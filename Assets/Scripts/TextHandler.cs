@@ -14,23 +14,30 @@ public class TextHandler : MonoBehaviour {
 	//Public variables
 	public States state; //What state are we in? (See enum of states)
 	public Text textBox; //The Textbox we want to use to display dialogue
+	public Voice voice; //The "voice" for this character
 	public string[] text; //The text to be displayed
-	public float rate;  //The number of characters/second to be revealed
 
 	//Private variables
+	AudioSource source;
 	int stringIndex; //Index of string in array we are displaying
 	int charIndex; //Index of character to reveal
-	AudioSource bleepSound; //The base "bleep" sound for revealing a character
 	float timer = 0; //Timer for going character-by-character
 
 	void Awake(){
-		bleepSound = GetComponent<AudioSource>();
-		//state = States.Unloaded;
-		state = States.Loaded;
+		source = GetComponent<AudioSource>();
+		state = States.Unloaded;
 	}
 
 	// Use this for initialization
 	void Start () {
+		AudioClip sound = Resources.Load("bleep") as AudioClip;
+		Debug.Log(sound);
+		Voice v = new Voice(0.1f, 1, 3, sound);
+
+		string [] examples = {"Hello world!", "Test text!"};
+
+		SetVoice(v);
+		SetText(examples);
 	}
 	
 	// Update is called once per frame
@@ -43,14 +50,16 @@ public class TextHandler : MonoBehaviour {
 		 }
 	}
 
+	public void SetVoice(Voice v){
+		voice = v;
+		source.clip = voice.sound;
+	}
+
 	public void SetText(string[] newText){ //Used to update new text
 		text = newText; //Set new text
 		stringIndex = 0; //Reset indicies
 		charIndex = 0;
-	}
-
-	public void SetRate(float r){ //Used to set the rate of revealing characters
-		rate = r;
+		state = States.Loaded;
 	}
 
 	public void AdvanceLine(){ //Called to skip revealing, or initiate revealing of next line.
@@ -96,12 +105,12 @@ public class TextHandler : MonoBehaviour {
 	}
 
 	void UpdateCharacter(){ //Used to reveal another character
-		if(state == States.Revealing && timer >= rate){
+		if(state == States.Revealing && timer >= voice.rate){
 			timer = 0;
 			AdvanceCharacter();
 			UpdateText();
-			bleepSound.pitch = Random.Range(2, 5);
-			bleepSound.Play();
+			source.pitch = Random.Range(voice.low, voice.high);
+			source.Play();
 		}
 	}
 
