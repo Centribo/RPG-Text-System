@@ -30,8 +30,7 @@ public class TextHandler : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		//**************
-		//Example usage:
+		/* Example usage, comment out to see test!
 		AudioClip sound = Resources.Load("bleep") as AudioClip;
 		Voice v = new Voice(0.1f, 1, 3, sound);
 
@@ -39,7 +38,7 @@ public class TextHandler : MonoBehaviour {
 
 		SetVoice(v);
 		SetText(examples);
-		//**************
+		*/
 	}
 	
 	// Update is called once per frame

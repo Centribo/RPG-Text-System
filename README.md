@@ -20,8 +20,20 @@ A system for displaying text in Unity like in old RPG games.
 5. Give TextHandler an array of strings to display using TextHandler.SetText(string[] newText)
 6. Now, call TextHandler.AdvanceLine() to start advancing lines. (By default, this is set to OnMouseUp)
 
-## Example
+## Example Scene
 
+Included is a Example.unity scene is included to show how to properly load TextHandler and use it.
+Within TextHandler.cs, Void Start(), uncomment these lines to try it out:
+
+```
+AudioClip sound = Resources.Load("bleep") as AudioClip;
+Voice v = new Voice(0.1f, 1, 3, sound);
+
+string [] examples = {"Hello world!", "Test text!"};
+
+SetVoice(v);
+SetText(examples);
+```
 
 ## License
 CC0
